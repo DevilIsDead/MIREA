@@ -11,9 +11,6 @@ class Program {
 
         string startPath;
         var Path = ConfigurationManager.AppSettings["path"];
-        var ftpUrl = ConfigurationManager.AppSettings["ftpUrl"];
-        var ftpLogin = ConfigurationManager.AppSettings["ftpLogin"];
-        var ftpPassword = ConfigurationManager.AppSettings["ftpPassword"];
         if (Path != null) {
             startPath = (Path).ToString();
             string Result = "zip_PC_" + ConfigurationManager.AppSettings["pcNum"];
