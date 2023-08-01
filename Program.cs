@@ -4,6 +4,7 @@ using System.Configuration;
 using System.IO.Compression;
 using FluentFTP;
 
+<<<<<<< HEAD
 class Program
 {
     static void Main()
@@ -15,6 +16,19 @@ class Program
             if (File.Exists(zipName))
             {
                 File.Delete(zipName);
+=======
+class Program {
+
+    static void Main() {
+
+        string startPath;
+        var Path = ConfigurationManager.AppSettings["path"];
+        if (Path != null) {
+            startPath = (Path).ToString();
+            string Result = "zip_PC_" + ConfigurationManager.AppSettings["pcNum"];
+            if (File.Exists(Result)) {
+                File.Delete(Result);
+>>>>>>> 75cac3ad30aaa15dbfbde9c43aeb6a0349f2a9ab
             }
             ZipFile.CreateFromDirectory(src, zipName);
             string result = Path.GetFullPath(zipName);
