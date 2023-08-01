@@ -1,9 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "TpPcKJq56Wp62UcsdDLBTcNhIRdpzZdniPX3hjl4INHuIvxdyqvkGZwrFpiMQWGiQJ9kJVuMsUndZOrsBRVJYg==",
+  "dgSpecHash": "AVkZCnxuC2XpmNoiUwAhwXHtB4I943w+eJx/CV8InX4HDTG+fNKaZ1jfCp1bp/HQt4BcRBJuH4uT76+uURheWw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\Igor\\mirea\\zipToFtp\\zipToFtp.csproj",
+  "projectFilePath": "C:\\Users\\Igor\\mirea\\MIREA\\zipToFtp.csproj",
   "expectedPackageFiles": [
+    "C:\\Users\\Igor\\.nuget\\packages\\fluentftp\\47.1.0\\fluentftp.47.1.0.nupkg.sha512",
     "C:\\Users\\Igor\\.nuget\\packages\\microsoft.netcore.platforms\\5.0.0\\microsoft.netcore.platforms.5.0.0.nupkg.sha512",
     "C:\\Users\\Igor\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
     "C:\\Users\\Igor\\.nuget\\packages\\system.configuration.configurationmanager\\5.0.0\\system.configuration.configurationmanager.5.0.0.nupkg.sha512",

@@ -1,45 +1,59 @@
 ﻿using System;
+using System.IO;
 using System.Configuration;
 using System.IO.Compression;
-using System.IO;
-using System.Net.FtpClient;
-using System.Net;
+using FluentFTP;
 
-class Program {
-
-    static void Main() {
-
-        string startPath;
-        var Path = ConfigurationManager.AppSettings["path"];
-        var ftpUrl = ConfigurationManager.AppSettings["ftpUrl"];
-        var ftpLogin = ConfigurationManager.AppSettings["ftpLogin"];
-        var ftpPassword = ConfigurationManager.AppSettings["ftpPassword"];
-        if (Path != null) {
-            startPath = (Path).ToString();
-            string Result = "zip_PC_" + ConfigurationManager.AppSettings["pcNum"];
-            if (File.Exists(Result)) {
-                File.Delete(Result);
+class Program
+{
+    static void Main()
+    {
+        var src = ConfigurationManager.AppSettings["src"];
+        if (src != null)
+        {
+            string zipName = "zip_PC_" + ConfigurationManager.AppSettings["pcNum"] + ".zip";
+            if (File.Exists(zipName))
+            {
+                File.Delete(zipName);
             }
-            ZipFile.CreateFromDirectory(startPath, Result);
+            ZipFile.CreateFromDirectory(src, zipName);
+            string result = Path.GetFullPath(zipName);
 
-            if (ftpUrl != null && ftpLogin != null && ftpPassword != null) {
-                using (FtpClient client = new FtpClient()) {
-                        client.Host = ConfigurationManager.AppSettings["ftpUrl"];
-                        client.Credentials = new NetworkCredential(ConfigurationManager.AppSettings["ftpLogin"], ConfigurationManager.AppSettings["ftpPassword"]);
+            if (
+                ConfigurationManager.AppSettings["ftpUrl"] != null
+                && ConfigurationManager.AppSettings["ftpLogin"] != null
+                && ConfigurationManager.AppSettings["ftpPassword"] != null
+            )
+            {
+                var client = new FtpClient(
+                    ConfigurationManager.AppSettings["ftpUrl"],
+                    ConfigurationManager.AppSettings["ftpLogin"],
+                    ConfigurationManager.AppSettings["ftpPassword"]
+                );
+                client.AutoConnect();
+                var status = client.UploadFile(
+                    result,
+                    ConfigurationManager.AppSettings["ftpDir"] + zipName,
+                    FtpRemoteExists.Overwrite,
+                    true,
+                    FtpVerify.Retry
+                );
 
-                        using (Stream ostream = client.OpenWrite(Result)) {
-                            try {
-                                // istream.Position is incremented accordingly to the writes you perform
-                            }
-                            finally {
-                                ostream.Close();
-                            }
-                        }
-                }
-            } else {
-                Console.WriteLine("Wrong FTP information!");
+                var msg = status switch
+                {
+                    FtpStatus.Success => "file successfully uploaded",
+                    FtpStatus.Failed => "failed to upload file",
+                    _ => "unknown"
+                };
+                Console.WriteLine(msg);
             }
-        } else {
+            else
+            {
+                Console.WriteLine("Empty FTP information!");
+            }
+        }
+        else
+        {
             Console.WriteLine("Wrong directory!");
         }
         Console.WriteLine("Press any key to continue.................");
