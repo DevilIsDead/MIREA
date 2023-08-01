@@ -8,6 +8,13 @@ class Program
 {
     static void Main()
     {
+        ConfigurationManager.RefreshSection("src");
+        ConfigurationManager.RefreshSection("pcNum");
+        ConfigurationManager.RefreshSection("ftpUrl");
+        ConfigurationManager.RefreshSection("ftpPort");
+        ConfigurationManager.RefreshSection("ftpLogin");
+        ConfigurationManager.RefreshSection("ftpPassword");
+        ConfigurationManager.RefreshSection("ftpDir");
         var src = ConfigurationManager.AppSettings["src"];
         if (src != null)
         {
@@ -19,6 +26,7 @@ class Program
             ZipFile.CreateFromDirectory(src, zipName);
             string result = Path.GetFullPath(zipName);
 
+            
             if (
                 ConfigurationManager.AppSettings["ftpUrl"] != null
                 && ConfigurationManager.AppSettings["ftpLogin"] != null
