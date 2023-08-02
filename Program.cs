@@ -40,6 +40,7 @@ class Program
 
                 try
                 {
+                    client.Config.RetryAttempts = 3;
                     client.AutoConnect();
                     var status = client.UploadFile(
                         result,
