@@ -26,7 +26,6 @@ class Program
             ZipFile.CreateFromDirectory(src, zipName);
             string result = Path.GetFullPath(zipName);
 
-            
             if (
                 ConfigurationManager.AppSettings["ftpUrl"] != null
                 && ConfigurationManager.AppSettings["ftpLogin"] != null
@@ -38,22 +37,33 @@ class Program
                     ConfigurationManager.AppSettings["ftpLogin"],
                     ConfigurationManager.AppSettings["ftpPassword"]
                 );
-                client.AutoConnect();
-                var status = client.UploadFile(
-                    result,
-                    ConfigurationManager.AppSettings["ftpDir"] + zipName,
-                    FtpRemoteExists.Overwrite,
-                    true,
-                    FtpVerify.Retry
-                );
 
-                var msg = status switch
+                try
                 {
-                    FtpStatus.Success => "file successfully uploaded",
-                    FtpStatus.Failed => "failed to upload file",
-                    _ => "unknown"
-                };
-                Console.WriteLine(msg);
+                    client.AutoConnect();
+                    var status = client.UploadFile(
+                        result,
+                        ConfigurationManager.AppSettings["ftpDir"] + zipName,
+                        FtpRemoteExists.Overwrite,
+                        true,
+                        FtpVerify.Retry
+                    );
+
+                    var msg = status switch
+                    {
+                        FtpStatus.Success => "file successfully uploaded",
+                        FtpStatus.Failed => "failed to upload file",
+                        _ => "unknown"
+                    };
+                    Console.WriteLine(msg);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine(
+                        "Cannot connect to FTP: " + ConfigurationManager.AppSettings["ftpUrl"]
+                    );
+                    Console.WriteLine("Exception " + ex.Message);
+                }
             }
             else
             {
@@ -64,7 +74,7 @@ class Program
         {
             Console.WriteLine("Wrong directory!");
         }
-        Console.WriteLine("Press any key to continue.................");
+        Console.WriteLine("Press any key to exit.................");
         Console.ReadKey();
     }
 }
