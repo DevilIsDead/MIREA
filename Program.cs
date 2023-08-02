@@ -16,7 +16,11 @@ class Program
         ConfigurationManager.RefreshSection("ftpPassword");
         ConfigurationManager.RefreshSection("ftpDir");
         var src = ConfigurationManager.AppSettings["src"];
-        if (Directory.Exists(src))
+        if (!Directory.Exists(src))
+        {
+            Console.WriteLine("No such directory!");
+        }
+        else
         {
             string zipName = "zip_PC_" + ConfigurationManager.AppSettings["pcNum"] + ".zip";
             if (File.Exists(zipName))
@@ -27,21 +31,24 @@ class Program
             string result = Path.GetFullPath(zipName);
 
             if (
-                ConfigurationManager.AppSettings["ftpUrl"] != null
-                && ConfigurationManager.AppSettings["ftpLogin"] != null
-                && ConfigurationManager.AppSettings["ftpPassword"] != null
+                ConfigurationManager.AppSettings["ftpUrl"] == null
+                && ConfigurationManager.AppSettings["ftpLogin"] == null
+                && ConfigurationManager.AppSettings["ftpPassword"] == null
             )
             {
-                var client = new FtpClient(
-                    ConfigurationManager.AppSettings["ftpUrl"],
-                    ConfigurationManager.AppSettings["ftpLogin"],
-                    ConfigurationManager.AppSettings["ftpPassword"]
-                );
-
+                Console.WriteLine("Empty FTP information!");
+            }
+            else
+            {
                 try
                 {
-                    client.Config.RetryAttempts = 3;
-                    if (client.AutoConnect() != null) {
+                    var client = new FtpClient(
+                        ConfigurationManager.AppSettings["ftpUrl"],
+                        ConfigurationManager.AppSettings["ftpLogin"],
+                        ConfigurationManager.AppSettings["ftpPassword"]
+                    );
+
+                    client.Connect();
                     var status = client.UploadFile(
                         result,
                         ConfigurationManager.AppSettings["ftpDir"] + zipName,
@@ -57,9 +64,6 @@ class Program
                         _ => "unknown"
                     };
                     Console.WriteLine(msg);
-                    } else {
-                        Console.WriteLine("Connection errop");
-                    }
                 }
                 catch (Exception ex)
                 {
@@ -69,14 +73,6 @@ class Program
                     Console.WriteLine("Exception " + ex.Message);
                 }
             }
-            else
-            {
-                Console.WriteLine("Empty FTP information!");
-            }
-        }
-        else
-        {
-            Console.WriteLine("No such directory!");
         }
         Console.WriteLine("Press any key to exit.................");
         Console.ReadKey();
