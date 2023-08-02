@@ -16,7 +16,7 @@ class Program
         ConfigurationManager.RefreshSection("ftpPassword");
         ConfigurationManager.RefreshSection("ftpDir");
         var src = ConfigurationManager.AppSettings["src"];
-        if (src != null)
+        if (Directory.Exists(src))
         {
             string zipName = "zip_PC_" + ConfigurationManager.AppSettings["pcNum"] + ".zip";
             if (File.Exists(zipName))
@@ -41,7 +41,7 @@ class Program
                 try
                 {
                     client.Config.RetryAttempts = 3;
-                    client.AutoConnect();
+                    if (client.AutoConnect() != null) {
                     var status = client.UploadFile(
                         result,
                         ConfigurationManager.AppSettings["ftpDir"] + zipName,
@@ -57,6 +57,9 @@ class Program
                         _ => "unknown"
                     };
                     Console.WriteLine(msg);
+                    } else {
+                        Console.WriteLine("Connection errop");
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -73,7 +76,7 @@ class Program
         }
         else
         {
-            Console.WriteLine("Wrong directory!");
+            Console.WriteLine("No such directory!");
         }
         Console.WriteLine("Press any key to exit.................");
         Console.ReadKey();
